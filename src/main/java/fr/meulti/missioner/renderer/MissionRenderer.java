@@ -48,22 +48,12 @@ public class MissionRenderer {
         if (Files.exists(texturePath)) {
             try {
                 BufferedImage image = ImageIO.read(texturePath.toFile());
-                int width = image.getWidth();
-                int height = image.getHeight();
-                NativeImage nativeImage = new NativeImage(width, height, false);
-
-                for (int x = 0; x < width; x++) {
-                    for (int y = 0; y < height; y++) {
-                        int rgb = image.getRGB(x, y);
-                        int alpha = (rgb >> 24) & 0xFF;
-                        int red = (rgb >> 16) & 0xFF;
-                        int green = (rgb >> 8) & 0xFF;
-                        int blue = rgb & 0xFF;
-
-                        nativeImage.setPixelRGBA(x, y, (red << 16) | (green << 8) | (blue) | (alpha << 24));
+                NativeImage nativeImage = new NativeImage(image.getWidth(), image.getHeight(), false);
+                for (int x = 0; x < image.getWidth(); x++) {
+                    for (int y = 0; y < image.getHeight(); y++) {
+                        nativeImage.setPixelRGBA(x, y, image.getRGB(x, y));
                     }
                 }
-
                 dynamicTexture = new DynamicTexture(nativeImage);
                 backgroundTexture = Minecraft.getInstance().getTextureManager().register("dynamic_background", dynamicTexture);
             } catch (IOException e) {
